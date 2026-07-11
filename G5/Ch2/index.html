@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hindi Grade 5 - Chapter 2 CBQ Quiz</title>
+    <title>CBQ Quiz Game</title>
     <style>
         :root {
-            --bg-color: #f8fafc;
+            --bg-color: #f1f5f9;
             --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --primary: #0f766e;
-            --primary-light: #ccfbf1;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --primary: #0d9488;
+            --primary-dark: #115e59;
             --success: #16a34a;
             --success-light: #dcfce7;
             --error: #dc2626;
             --error-light: #fee2e2;
-            --border: #e2e8f0;
+            --border: #cbd5e1;
         }
 
         * {
@@ -31,87 +31,154 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            justify-content: center;
             align-items: center;
-            padding: 12px;
+            min-height: 100vh;
+            padding: 16px;
         }
 
-        /* Container Layout */
         .quiz-container {
             width: 100%;
             max-width: 600px;
             background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            padding: 20px;
-            margin-top: 10px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 24px;
             position: relative;
             overflow: hidden;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Header Setup */
-        .quiz-header {
+        /* Screen Visibility Control */
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            flex-grow: 1;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* 1) Splash Screen (Logo Only) */
+        #splash-screen {
+            justify-content: center;
+            align-items: center;
+        }
+
+        #splash-screen img {
+            max-width: 80%;
+            height: auto;
+            max-height: 150px;
+            object-fit: contain;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.98); opacity: 0.8; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(0.98); opacity: 0.8; }
+        }
+
+        /* 2) Instruction Screen */
+        #instruction-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .ins-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .ins-box {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .ins-item {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Common Button Style */
+        .btn-action {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-action:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 3) Game Layout & Header Controls */
+        .game-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 12px;
             margin-bottom: 16px;
-        }
-
-        .logo-area img {
-            height: 40px;
-            object-fit: contain;
-        }
-
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--bg-color);
         }
 
         .mute-btn {
             background: none;
             border: 1px solid var(--border);
-            padding: 8px 12px;
+            padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
+            font-weight: 600;
             font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
 
-        /* Stats Bar */
         .stats-bar {
             display: flex;
             justify-content: space-between;
             background: var(--bg-color);
-            padding: 10px 14px;
+            padding: 12px;
             border-radius: 10px;
-            margin-bottom: 16px;
-            font-weight: 600;
+            margin-bottom: 20px;
+            font-weight: 700;
             font-size: 15px;
         }
 
         .timer {
             color: var(--error);
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
 
-        /* Question & Competency */
         .competency-badge {
-            display: inline-block;
-            background: var(--primary-light);
-            color: var(--primary);
+            align-self: flex-start;
+            background: #e0f2fe;
+            color: #0369a1;
             padding: 4px 10px;
             border-radius: 6px;
             font-size: 12px;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .question-text {
@@ -121,11 +188,12 @@
             margin-bottom: 20px;
         }
 
-        /* Options Configuration */
+        /* Options Grid */
         .options-grid {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            flex-grow: 1;
         }
 
         .option-card {
@@ -134,20 +202,11 @@
             border-radius: 12px;
             padding: 16px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
             width: 100%;
-            display: flex;
-            align-items: center;
-        }
-
-        @media (hover: hover) {
-            .option-card:hover:not(.disabled) {
-                border-color: var(--primary);
-                background-color: var(--bg-color);
-            }
         }
 
         .option-card.correct {
@@ -161,246 +220,240 @@
             background-color: var(--error-light) !important;
             border-color: var(--error) !important;
             color: var(--error) !important;
-            opacity: 0.7;
+            opacity: 0.8;
         }
 
         .option-card.disabled {
             cursor: not-allowed;
         }
 
-        /* Feedback & Action Navigation */
-        .feedback-box {
-            margin-top: 16px;
-            padding: 12px;
+        .feedback-msg {
+            margin-top: 12px;
+            padding: 10px;
             border-radius: 8px;
             text-align: center;
-            font-weight: 600;
-            display: none;
-        }
-
-        .feedback-box.retry {
+            font-weight: 700;
             background: #fff7ed;
             color: #c2410c;
-            display: block;
+            display: none;
         }
 
         .action-area {
             margin-top: 20px;
-            display: flex;
-            justify-content: flex-end;
         }
 
-        .btn-next {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            display: none;
+        /* 4) Creative End Page Setup */
+        #result-screen {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .congrats-art {
+            font-size: 64px;
+            margin-bottom: 10px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .result-msg-box {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 15px 0 25px 0;
+            padding: 16px;
+            border-radius: 12px;
             width: 100%;
-            text-align: center;
         }
 
-        /* Result View */
-        .result-screen {
-            text-align: center;
-            display: none;
-            padding: 20px 10px;
-        }
-
-        .result-title {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 12px;
-        }
-
-        .result-score {
-            font-size: 48px;
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            border: 4px solid var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 16px;
+            margin-bottom: 15px;
         }
 
-        .result-message {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            color: var(--text-main);
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        .btn-restart {
-            background: var(--text-main);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        /* Confetti Elements */
-        .confetti {
+        /* Sparkles Canvas Effect */
+        .particle {
             position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #cbd5e1;
-            position: absolute;
-            animation: confetti-fall 1s ease-out forwards;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: fly 0.8s ease-out forwards;
             pointer-events: none;
         }
 
-        @keyframes confetti-fall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(200px) rotate(360deg); opacity: 0; }
+        @keyframes fly {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
     <div class="quiz-container">
-        <div class="quiz-header">
-            <div class="logo-area">
-                <img src="assets/innovine-logo.png" alt="Innovine Logo" onerror="this.style.display='none'">
-            </div>
-            <div class="controls">
-                <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊 आवाज़ ऑन</button>
-            </div>
+        
+        <div id="splash-screen" class="screen active">
+            <img src="assets/innovine-logo.png" alt="Logo">
         </div>
 
-        <div id="quiz-screen">
+        <div id="instruction-screen" class="screen">
+            <div class="ins-title">प्रश्नोत्तरी निर्देश</div>
+            <div class="ins-box">
+                <div class="ins-item">⏱️ <span>प्रत्येक प्रश्न के लिए 60 सेकंड का समय मिलेगा।</span></div>
+                <div class="ins-item">🔄 <span>गलत उत्तर देने पर 1 अतिरिक्त प्रयास (कुल 2 चांस) मिलेगा।</span></div>
+                <div class="ins-item">🎯 <span>सही विकल्प चुनकर अंक प्राप्त करें।</span></div>
+            </div>
+            <button class="btn-action" onclick="startQuiz()">शुरू करें 🚀</button>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div class="game-header">
+                <div class="competency-badge" id="competency-box">योग्यता</div>
+                <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊 आवाज़ ऑन</button>
+            </div>
+            
             <div class="stats-bar">
-                <div id="score-tracker">अंक: 0/12</div>
-                <div id="question-count">प्रश्न: 1/12</div>
+                <div id="q-count">प्रश्न: 1/10</div>
+                <div id="score-count">अंक: 0/10</div>
                 <div class="timer" id="timer-display">⏱️ 60s</div>
             </div>
 
-            <div id="competency-box" class="competency-badge">योग्यता</div>
-            <div id="question-box" class="question-text">प्रश्न लोड हो रहा है...</div>
+            <div class="question-text" id="question-box">प्रश्न लोड हो रहा है...</div>
 
-            <div class="options-grid" id="options-container">
-                </div>
+            <div class="options-grid" id="options-container"></div>
 
-            <div id="feedback-container" class="feedback-box"></div>
+            <div class="feedback-msg" id="feedback-box"></div>
 
             <div class="action-area">
-                <button id="nextBtn" class="btn-next" onclick="nextQuestion()">अगला प्रश्न ➡️</button>
+                <button class="btn-action" id="nextBtn" style="display: none;" onclick="nextQuestion()">अगला प्रश्न ➡️</button>
             </div>
         </div>
 
-        <div id="result-screen" class="result-screen">
-            <div class="result-title">🎯 क्विज़ पूरा हुआ!</div>
-            <div class="result-score" id="final-score">0 / 12</div>
-            <div class="result-message" id="final-message">समीक्षा की जा रही है...</div>
-            <button class="btn-restart" onclick="restartQuiz()">🔄 फिर से प्रयास करें</button>
+        <div id="result-screen" class="screen">
+            <div class="congrats-art" id="result-emoji">🎉</div>
+            <div class="ins-title" id="result-title">बधाई हो!</div>
+            <div class="score-circle" id="final-score">0/10</div>
+            <div class="result-msg-box" id="result-message">क्विज़ पूरा करने के लिए धन्यवाद!</div>
+            <button class="btn-action" onclick="restartQuiz()">🔄 फिर से खेलें</button>
         </div>
+
     </div>
 
     <script>
-        // Full Dataset: 10 original + 2 added Competency Questions to meet criteria
+        // Strictly 10 original dataset questions
         const questions = [
             {
                 q: "विद्यालय के मैदान में गर्मियों के समय बहुत अधिक गर्मी होती है। पेड़ों के महत्व को समझते हुए विद्यालय को क्या करना चाहिए?",
                 options: ["मैदान में और अधिक सीमेंट लगवाना", "अधिक पेड़ लगाकर उनकी देखभाल करना", "सभी पेड़ों को काट देना", "केवल पंखों की संख्या बढ़ाना"],
                 answer: 1,
-                competency: "पर्यावरण संरक्षण के ज्ञान का वास्तविक जीवन में प्रयोग"
+                competency: "वास्तविक जीवन प्रयोग"
             },
             {
                 q: "रिया अपने मित्र को जन्मदिन पर ऐसा उपहार देना चाहती है जो लंबे समय तक उपयोगी रहे। वह क्या दे सकती है?",
                 options: ["प्लास्टिक से बना खिलौना", "एक पौधा जिसे वह बड़ा कर सके", "केवल सजावटी वस्तु", "कागज की बनी वस्तु"],
                 answer: 1,
-                competency: "पर्यावरण के प्रति जिम्मेदार निर्णय लेना"
+                competency: "जिम्मेदार निर्णय लेना"
             },
             {
-                q: "एक व्यक्ति कहता है, “पेड़ों का महत्व केवल लकड़ी प्राप्त करने तक ही सीमित है।” इस विचार के बारे में सही विकल्प चुनिए.",
+                q: "एक व्यक्ति कहता है, “पेड़ों का महत्व केवल लकड़ी प्राप्त करने तक ही सीमित है।” इस विचार के बारे में सही विकल्प चुनिए।",
                 options: ["यह सही है क्योंकि पेड़ केवल लकड़ी देते हैं।", "यह गलत है क्योंकि पेड़ जीवन के लिए आवश्यक कई सुविधाएँ प्रदान करते हैं।", "यह सही है क्योंकि पेड़ केवल जंगलों में उपयोगी होते हैं।", "यह गलत है क्योंकि पेड़ों का कोई उपयोग नहीं होता।"],
                 answer: 1,
-                competency: "तर्क के आधार पर विचारों का मूल्यांकन"
+                competency: "विचारों का मूल्यांकन"
             },
             {
                 q: "एक शहर में प्रदूषण बढ़ रहा है। पेड़ों की भूमिका को ध्यान में रखते हुए सबसे प्रभावी उपाय क्या होगा?",
                 options: ["अधिक वाहनों का प्रयोग करना", "पेड़ों की कटाई बढ़ाना", "अधिक पौधे लगाना और उनकी रक्षा करना", "कूड़ा खुले में फेंकना"],
                 answer: 2,
-                competency: "पर्यावरणी समस्या का समाधान करना"
+                competency: "समस्या का समाधान"
             },
             {
                 q: "पेड़ों को “हरा सोना” कहना किस बात को दर्शाता है?",
                 options: ["पेड़ों का रंग सोने जैसा होता है।", "पेड़ बहुत मूल्यवान और जीवन उपयोगी होते हैं।", "पेड़ केवल व्यापार के लिए उपयोगी हैं।", "पेड़ों से सोना प्राप्त होता है।"],
                 answer: 1,
-                competency: "भाषा में छिपे भाव को समझना और व्याख्या करना"
+                competency: "भाव की व्याख्या"
             },
             {
                 q: "आपके मोहल्ले में लोग पेड़ों की शाखाएँ काट रहे हैं। आप क्या करेंगे?",
                 options: ["उन्हें रोककर पेड़ों की सुरक्षा के लिए जागरूक करेंगे।", "उन्हें और पेड़ काटने के लिए कहेंगे।", "इस बात को अनदेखा कर देंगे।", "पेड़ों को नुकसान पहुँचाएँगे।"],
                 answer: 0,
-                competency: "जिम्मेदार नागरिक व्यवहार अपनाना"
+                competency: "नागरिक व्यवहार"
             },
             {
                 q: "यदि पृथ्वी पर पेड़ों की संख्या बहुत कम हो जाए, तो सबसे संभावित परिणाम क्या होगा?",
                 options: ["वायु शुद्धता बढ़ जाएगी।", "जीव-जंतुओं को अधिक स्थान मिलेगा।", "प्रदूषण और तापमान बढ़ सकता है।", "वर्षा हमेशा समान रहेगी।"],
                 answer: 2,
-                competency: "कारण और परिणाम का विश्लेषण"
+                competency: "कारण और परिणाम विश्लेषण"
             },
             {
                 q: "कक्षा के विद्यार्थी “पेड़ बचाओ अभियान” शुरू करना चाहते हैं। इनमें से कौन-सा कार्य सबसे प्रभावी होगा?",
                 options: ["पेड़ों पर चित्र बनाना", "पौधे लगाना और उनकी देखभाल करना", "पेड़ों के आसपास कचरा डालना", "पेड़ों की शाखाएँ तोड़ना"],
                 answer: 1,
-                competency: "सकारात्मक पर्यावरणीय कार्यों का चयन"
+                competency: "सकारात्मक पर्यावरणीय कार्य"
             },
             {
                 q: "पेड़ पक्षियों और जानवरों के लिए क्यों महत्वपूर्ण हैं?",
                 options: ["क्योंकि वे केवल सुंदर दिखाई देते हैं।", "क्योंकि वे उन्हें भोजन और रहने का स्थान देते हैं।", "क्योंकि वे केवल मनुष्यों के लिए उपयोगी हैं।", "क्योंकि वे चल सकते हैं।"],
                 answer: 1,
-                competency: "पारिस्थितिकी संबंधों का विश्लेषण"
+                competency: "पारिस्थितिकी संबंध विश्लेषण"
             },
             {
                 q: "एक विद्यार्थी कहता है, “मेरे अकेले पेड़ लगाने से कोई बड़ा बदलाव नहीं आएगा।” सही उत्तर क्या होगा?",
                 options: ["वह सही है, क्योंकि एक व्यक्ति कुछ नहीं कर सकता।", "पेड़ लगाना व्यर्थ है।", "छोटे-छोटे प्रयास मिलकर बड़ा परिवर्तन ला सकते हैं।", "केवल सरकार ही पेड़ लगा सकती है।"],
                 answer: 2,
-                competency: "सामूहिक प्रयासों के महत्व को समझना"
-            },
-            {
-                q: "आपके स्कूल में एक पुराना पेड़ सूख गया है। उसे काटकर हटाने के बजाय उसका क्या रचनात्मक उपयोग किया जा सकता है?",
-                options: ["उसे वैसे ही छोड़कर भूल जाना", "उस पर पक्षियों के लिए कृत्रिम घोंसले और दाना-पानी रखना", "उसे तुरंत पूरी तरह जला देना", "उसके आसपास बड़ी कंक्रीट की दीवार खड़ी कर देना"],
-                answer: 1,
-                competency: "अनुपयोगी प्राकृतिक वस्तुओं का पर्यावरण-अनुकूल उपयोग"
-            },
-            {
-                q: "वर्षा ऋतु आने वाली है। अपने आस-पास के वातावरण को हरा-भरा बनाने के लिए आप अपने मित्रों के साथ क्या योजना बनाएंगे?",
-                options: ["घरों के अंदर बैठकर वीडियो गेम खेलना", "विभिन्न पौधों के बीज इकट्ठा करके उन्हें खाली मिटटी वाली जगहों पर रोपना", "बाज़ार से प्लास्टिक के कृत्रिम पौधे खरीदकर सजाना", "केवल टीवी पर पर्यावरण संवर्धन से जुड़े कार्यक्रम देखना"],
-                answer: 1,
-                competency: "प्राकृतिक अवसरों का पर्यावरण संवर्धन के लिए योजना बनाना"
+                competency: "सामूहिक प्रयास का महत्व"
             }
         ];
 
-        // Runtime Tracking Variables
         let currentIndex = 0;
         let score = 0;
-        let attemptsLeft = 2; 
+        let currentAttempts = 0; // Tracks attempt for current question
         let timeLeft = 60;
         let timerInterval = null;
         let isMuted = false;
 
-        // Audio Objects mapped strictly to repository scheme
         const sndCorrect = new Audio('assets/correct.mp3');
         const sndWrong = new Audio('assets/wrong.mp3');
         const sndClapping = new Audio('assets/clapping.mp3');
+
+        // 1) Handle 5 Seconds Splash Screen Auto Transition
+        window.onload = () => {
+            setTimeout(() => {
+                switchScreen('instruction-screen');
+            }, 5000);
+        };
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
 
         function toggleMute() {
             isMuted = !isMuted;
             document.getElementById('muteBtn').innerText = isMuted ? "🔇 आवाज़ म्यूट" : "🔊 आवाज़ ऑन";
         }
 
-        function playSound(audioObject) {
+        function playSound(audio) {
             if (!isMuted) {
-                audioObject.currentTime = 0;
-                audioObject.play().catch(e => console.log("Audio playback raw block handled:", e));
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio play error context handled."));
             }
+        }
+
+        function startQuiz() {
+            switchScreen('quiz-screen');
+            loadQuestion();
         }
 
         function startTimer() {
@@ -419,67 +472,61 @@
         }
 
         function loadQuestion() {
-            clearInterval(timerInterval);
-            attemptsLeft = 2;
-            
+            currentAttempts = 0;
             const currentQuestion = questions[currentIndex];
             
-            // UI Updates
-            document.getElementById('question-count').innerText = `प्रश्न: ${currentIndex + 1}/12`;
+            document.getElementById('q-count').innerText = `प्रश्न: ${currentIndex + 1}/10`;
+            document.getElementById('score-count').innerText = `अंक: ${score}/10`;
             document.getElementById('competency-box').innerText = currentQuestion.competency;
             document.getElementById('question-box').innerText = currentQuestion.q;
             
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
-            document.getElementById('feedback-container').className = 'feedback-box';
-            document.getElementById('feedback-container').style.display = 'none';
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            document.getElementById('feedback-box').style.display = 'none';
             document.getElementById('nextBtn').style.display = 'none';
 
-            currentQuestion.options.forEach((optionText, idx) => {
-                const button = document.createElement('button');
-                button.className = 'option-card';
-                button.innerText = optionText;
-                button.onclick = () => checkAnswer(idx, button);
-                optionsContainer.appendChild(button);
+            currentQuestion.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-card';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(idx, btn);
+                container.appendChild(btn);
             });
 
             startTimer();
         }
 
-        function checkAnswer(selectedIndex, selectedButton) {
+        function selectOption(selectedIndex, selectedBtn) {
             const currentQuestion = questions[currentIndex];
-            const optionsContainer = document.getElementById('options-container');
-            const feedbackContainer = document.getElementById('feedback-container');
+            const container = document.getElementById('options-container');
+            const feedback = document.getElementById('feedback-box');
 
             if (selectedIndex === currentQuestion.answer) {
-                // Correct Scenario
+                // Correct choice logic
                 clearInterval(timerInterval);
-                selectedButton.classList.add('correct');
+                selectedBtn.classList.add('correct');
                 playSound(sndCorrect);
                 triggerSparkles();
                 score++;
-                document.getElementById('score-tracker').innerText = `अंक: ${score}/12`;
+                document.getElementById('score-count').innerText = `अंक: ${score}/10`;
                 disableAllOptions();
                 document.getElementById('nextBtn').style.display = 'block';
             } else {
-                // Incorrect Scenario
-                attemptsLeft--;
-                selectedButton.classList.add('wrong');
-                selectedButton.onclick = null; // Disable re-clicking wrong option
+                // Wrong choice logic
+                currentAttempts++;
+                selectedBtn.classList.add('wrong');
+                selectedBtn.onclick = null; // Disable clicking this wrong option again
                 playSound(sndWrong);
 
-                if (attemptsLeft > 0) {
-                    feedbackContainer.innerText = "गलत उत्तर! एक और प्रयास उपलब्ध है। सही विकल्प चुनें।";
-                    feedbackContainer.className = "feedback-box retry";
+                if (currentAttempts === 1) {
+                    feedback.innerText = "गलत उत्तर! आपके पास 1 आखिरी प्रयास शेष है।";
+                    feedback.style.display = 'block';
                 } else {
-                    // Out of attempts
+                    // 2 attempts completed, show correct answer directly
                     clearInterval(timerInterval);
-                    feedbackContainer.className = "feedback-box";
-                    feedbackContainer.style.display = "none";
+                    feedback.style.display = 'none';
                     disableAllOptions();
-                    
-                    // Highlight true configuration
-                    optionsContainer.children[currentQuestion.answer].classList.add('correct');
+                    container.children[currentQuestion.answer].classList.add('correct');
                     document.getElementById('nextBtn').style.display = 'block';
                 }
             }
@@ -488,12 +535,12 @@
         function handleTimeout() {
             disableAllOptions();
             const currentQuestion = questions[currentIndex];
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.children[currentQuestion.answer].classList.add('correct');
+            const container = document.getElementById('options-container');
+            container.children[currentQuestion.answer].classList.add('correct');
             
-            const feedbackContainer = document.getElementById('feedback-container');
-            feedbackContainer.innerText = "समय समाप्त हो गया है!";
-            feedbackContainer.className = "feedback-box retry";
+            const feedback = document.getElementById('feedback-box');
+            feedback.innerText = "समय समाप्त हो गया!";
+            feedback.style.display = 'block';
             document.getElementById('nextBtn').style.display = 'block';
         }
 
@@ -508,13 +555,15 @@
         function triggerSparkles() {
             const container = document.querySelector('.quiz-container');
             for(let i = 0; i < 15; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'confetti';
-                sparkle.style.left = Math.random() * container.offsetWidth + 'px';
-                sparkle.style.top = Math.random() * 50 + 'px';
-                sparkle.style.backgroundColor = ['#22c55e', '#3b82f6', '#eab308', '#ec4899'][Math.floor(Math.random()*4)];
-                container.appendChild(sparkle);
-                setTimeout(() => sparkle.remove(), 1000);
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = '50%';
+                p.style.top = '40%';
+                p.style.setProperty('--x', (Math.random() * 300 - 150) + 'px');
+                p.style.setProperty('--y', (Math.random() * 300 - 150) + 'px');
+                p.style.backgroundColor = ['#0d9488', '#22c55e', '#eab308', '#3b82f6'][Math.floor(Math.random()*4)];
+                container.appendChild(p);
+                setTimeout(() => p.remove(), 800);
             }
         }
 
@@ -527,43 +576,43 @@
             }
         }
 
+        // 4) Creative End Screen Display Configured Perfectly
         function showResults() {
-            document.getElementById('quiz-screen').style.display = 'none';
-            const resultScreen = document.getElementById('result-screen');
-            resultScreen.style.display = 'block';
+            switchScreen('result-screen');
+            const percent = (score / questions.length) * 100;
+            document.getElementById('final-score').innerText = `${score}/10`;
 
-            const percentage = (score / questions.length) * 100;
-            document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+            const emojiEl = document.getElementById('result-emoji');
+            const titleEl = document.getElementById('result-title');
+            const msgBox = document.getElementById('result-message');
 
-            const messageBox = document.getElementById('final-message');
-            
-            if (percentage >= 75) {
-                messageBox.innerText = "Good job! 🎉";
-                messageBox.style.backgroundColor = var(--success-light);
-                messageBox.style.color = var(--success);
+            if (percent >= 75) {
+                emojiEl.innerText = "🏆";
+                titleEl.innerText = "अद्भुत प्रदर्शन!";
+                msgBox.innerText = "Good job! 🎉 आपने इस विषय को बहुत अच्छी तरह समझा है।";
+                msgBox.style.backgroundColor = "var(--success-light)";
+                msgBox.style.color = "var(--success)";
                 playSound(sndClapping);
-            } else if (percentage >= 40) {
-                messageBox.innerText = "Review this chapter and try again 👍";
-                messageBox.style.backgroundColor = "#ffedd5";
-                messageBox.style.color = "#c2410c";
+            } else if (percent >= 40) {
+                emojiEl.innerText = "👍";
+                titleEl.innerText = "अच्छा प्रयास!";
+                msgBox.innerText = "Review this chapter and try again! प्रयास करते रहें।";
+                msgBox.style.backgroundColor = "#ffedd5";
+                msgBox.style.color = "#c2410c";
             } else {
-                messageBox.innerText = "Let’s practise more 📚";
-                messageBox.style.backgroundColor = var(--error-light);
-                messageBox.style.color = var(--error);
+                emojiEl.innerText = "📚";
+                titleEl.innerText = "और अभ्यास करें!";
+                msgBox.innerText = "Let’s practise more! एक बार फिर ध्यान से खेलें।";
+                msgBox.style.backgroundColor = "var(--error-light)";
+                msgBox.style.color = "var(--error)";
             }
         }
 
         function restartQuiz() {
             currentIndex = 0;
             score = 0;
-            document.getElementById('score-tracker').innerText = `अंक: 0/12`;
-            document.getElementById('result-screen').style.display = 'none';
-            document.getElementById('quiz-screen').style.display = 'block';
-            loadQuestion();
+            switchScreen('instruction-screen');
         }
-
-        // Initialize App on load
-        window.onload = loadQuestion;
     </script>
 </body>
 </html>
