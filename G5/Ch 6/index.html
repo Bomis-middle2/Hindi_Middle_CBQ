@@ -371,4 +371,263 @@
     </div>
 
     <script>
-        // Exactly 10 questions on
+        // Exactly 10 questions on "Gopal and Mittu" Chapter
+        const questions = [
+            {
+                q: "यदि आपके मित्र को किसी प्रिय वस्तु या व्यक्ति से दूर होना पड़े, तो गोपाल की तरह आप क्या करेंगे?",
+                options: ["उसकी भावनाओं को अनदेखा करेंगे।", "उसकी भावनाओं को समझकर उसे सहयोग देंगे।", "उसका मज़ाक उड़ाएँगे।", "eउसे अकेला छोड़ देंगे।"],
+                answer: 1,
+                competency: "दूसरों की भावनाओं को समझकर व्यवहार करना"
+            },
+            {
+                q: "गोपाल मिट्ठू को खरीदना चाहता था क्योंकि वह उससे बहुत प्रेम करता था। यदि आप गोपाल की जगह होते, तो क्या निर्णय लेते?",
+                options: ["बिना सोचे-समझे तुरंत निर्णय लेते।", "पहले यह सोचते कि जानवर की देखभाल की जिम्मेदारी निभा पाएँगे या नहीं।", "मिट्ठू को छोड़ देते क्योंकि जानवर पालना कठिन है।", "किसी और से कह देते कि वह उसकी देखभाल करे।"],
+                answer: 1,
+                competency: "जिम्मेदारी समझकर निर्णय लेना"
+            },
+            {
+                q: "गोपाल की माँ का विचार था कि “बंदर किसी को प्यार नहीं करता।” लेकिन मिट्ठू ने गोपाल की जान बचाई। इससे क्या निष्कर्ष निकलता है?",
+                options: ["सभी जानवर खतरनाक होते हैं।", "जानवरों में भी भावनाएँ और लगाव हो सकते हैं।", "मनुष्य और जानवरों में कोई संबंध नहीं होता।", "जानवरों पर कभी विश्वास नहीं करना चाहिए।"],
+                answer: 1,
+                competency: "घटनाओं के आधार पर निष्कर्ष निकालना"
+            },
+            {
+                q: "यदि किसी पालतू जानवर को चोट लग जाए, तो हमें क्या करना चाहिए?",
+                options: ["उसे अकेला छोड़ देना चाहिए।", "उसकी देखभाल करनी चाहिए और उपचार करवाना चाहिए।", "उसे डाँटना चाहिए।", "उसे बाहर छोड़ देना चाहिए।"],
+                answer: 1,
+                competency: "समस्या की स्थिति में उचित समाधान चुनना"
+            },
+            {
+                q: "मिट्ठू ने चीते से गोपाल की रक्षा क्यों की होगी?",
+                options: ["क्योंकि वह चीते से डर गया था।", "क्योंकि गोपाल और मिट्ठू के बीच प्रेम और विश्वास का संबंध था।", "क्योंकि उसे सर्कस छोड़ना था।", "क्योंकि वह केवल खेलना चाहता था।"],
+                answer: 1,
+                competency: "संबंधों और भावनाओं की व्याख्या करना"
+            },
+            {
+                q: "यदि आपके विद्यालय में किसी घायल पक्षी या जानवर को देखा जाए, तो आपको क्या करना चाहिए?",
+                options: ["eउसे परेशान करना चाहिए।", "उसकी सहायता करनी चाहिए और बड़े लोगों को जानकारी देनी चाहिए।", "उसे वहीं छोड़ देना चाहिए।", "उसे पकड़कर घर ले जाना चाहिए।"],
+                answer: 1,
+                competency: "संवेदनशील और जिम्मेदार व्यवहार अपनाना"
+            },
+            {
+                q: "यदि गोपाल मिट्ठू के साथ प्रेम और देखभाल का व्यवहार न करता, तो क्या संभव था?",
+                options: ["मिट्ठू के मन में गोपाल के प्रति विश्वास विकसित नहीं होता।", "मिट्ठू और अधिक खुश होता।", "गोपाल और मिट्ठू की दोस्ती जल्दी हो जाती।", "चीता गोपाल का मित्र बन जाता।"],
+                answer: 0,
+                competency: "कारण और परिणाम का विश्लेषण"
+            },
+            {
+                q: "गोपाल ने मिट्ठू को खरीदने के लिए पैसे बचाने या देने का प्रयास किया। इससे हमें कौन-Structure सीख मिलती है?",
+                options: ["अपनी इच्छा पूरी करने के लिए कोई भी तरीका अपनाना चाहिए।", "सच्चे संबंधों के लिए प्रयास और जिम्मेदारी आवश्यक है।", "पैसे का कोई महत्व नहीं होता।", "दूसरों की मदद नहीं करनी चाहिए।"],
+                answer: 1,
+                competency: "कहानी के मूल्य को जीवन में लागू करना"
+            },
+            {
+                q: "गोपाल और सर्कस कंपनी के मालिक के व्यवहार में क्या समानता थी?",
+                options: ["दोनों केवल पैसे के बारे में सोचते थे।", "दोनों ने मिट्ठू के प्रति स्नेह और चिंता दिखाई।", "दोनों मिट्ठू से डरते थे।", "दोनों उसे छोड़ना चाहते थे।"],
+                answer: 1,
+                competency: "पात्रों के व्यवहार का विश्लेषण करना"
+            },
+            {
+                q: "कहानी का मुख्य संदेश क्या है?",
+                options: ["केवल मनुष्य ही प्रेम कर सकते हैं।", "प्रेम, विश्वास और दया से किसी भी जीव के साथ मजबूत संबंध बनाया जा सकता है।", "जानवरों को हमेशा दूर रखना चाहिए।", "केवल पैसे से हर समस्या हल हो सकती है।"],
+                answer: 1,
+                competency: "कहानी के केंद्रीय भाव का मूल्यांकन"
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let currentAttempts = 0; 
+        let timeLeft = 60;
+        let timerInterval = null;
+        let isMuted = false;
+
+        const sndCorrect = new Audio('assets/correct.mp3');
+        const sndWrong = new Audio('assets/wrong.mp3');
+        const sndClapping = new Audio('assets/clapping.mp3');
+
+        // Automatic 5-second Splash Transition
+        window.onload = () => {
+            setTimeout(() => {
+                switchScreen('instruction-screen');
+            }, 5000);
+        };
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteBtn').innerText = isMuted ? "🔇 आवाज़ म्यूट" : "🔊 आवाज़ ऑन";
+        }
+
+        function playSound(audio) {
+            if (!isMuted) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio visual hook loaded."));
+            }
+        }
+
+        function startQuiz() {
+            switchScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 60;
+            document.getElementById('timer-display').innerText = `⏱️ ${timeLeft}s`;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-display').innerText = `⏱️ ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            currentAttempts = 0;
+            const currentQuestion = questions[currentIndex];
+            
+            document.getElementById('q-count').innerText = `प्रश्न: ${currentIndex + 1}/10`;
+            document.getElementById('score-count').innerText = `अंक: ${score}/10`;
+            document.getElementById('competency-box').innerText = currentQuestion.competency;
+            document.getElementById('question-box').innerText = currentQuestion.q;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            document.getElementById('feedback-box').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+
+            currentQuestion.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-card';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(idx, btn);
+                container.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            const currentQuestion = questions[currentIndex];
+            const container = document.getElementById('options-container');
+            const feedback = document.getElementById('feedback-box');
+
+            if (selectedIndex === currentQuestion.answer) {
+                clearInterval(timerInterval);
+                selectedBtn.classList.add('correct');
+                playSound(sndCorrect);
+                triggerSparkles();
+                score++;
+                document.getElementById('score-count').innerText = `अंक: ${score}/10`;
+                disableAllOptions();
+                document.getElementById('nextBtn').style.display = 'block';
+            } else {
+                currentAttempts++;
+                selectedBtn.classList.add('wrong');
+                selectedBtn.onclick = null; 
+                playSound(sndWrong);
+
+                if (currentAttempts === 1) {
+                    feedback.innerText = "गलत उत्तर! आपके पास 1 आखिरी प्रयास शेष है।";
+                    feedback.style.display = 'block';
+                } else {
+                    clearInterval(timerInterval);
+                    feedback.style.display = 'none';
+                    disableAllOptions();
+                    container.children[currentQuestion.answer].classList.add('correct');
+                    document.getElementById('nextBtn').style.display = 'block';
+                }
+            }
+        }
+
+        function handleTimeout() {
+            disableAllOptions();
+            const currentQuestion = questions[currentIndex];
+            const container = document.getElementById('options-container');
+            container.children[currentQuestion.answer].classList.add('correct');
+            
+            const feedback = document.getElementById('feedback-box');
+            feedback.innerText = "समय समाप्त हो गया!";
+            feedback.style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function disableAllOptions() {
+            const options = document.getElementById('options-container').children;
+            for (let opt of options) {
+                opt.classList.add('disabled');
+                opt.onclick = null;
+            }
+        }
+
+        function triggerSparkles() {
+            const container = document.querySelector('.quiz-container');
+            for(let i = 0; i < 15; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = '50%';
+                p.style.top = '40%';
+                p.style.setProperty('--x', (Math.random() * 300 - 150) + 'px');
+                p.style.setProperty('--y', (Math.random() * 300 - 150) + 'px');
+                p.style.backgroundColor = ['#0d9488', '#22c55e', '#eab308', '#3b82f6'][Math.floor(Math.random()*4)];
+                container.appendChild(p);
+                setTimeout(() => p.remove(), 800);
+            }
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            switchScreen('result-screen');
+            const percent = (score / questions.length) * 100;
+            document.getElementById('final-score').innerText = `${score}/10`;
+
+            const emojiEl = document.getElementById('result-emoji');
+            const titleEl = document.getElementById('result-title');
+            const msgBox = document.getElementById('result-message');
+
+            if (percent >= 75) {
+                emojiEl.innerText = "🏆";
+                titleEl.innerText = "शानदार प्रदर्शन!";
+                msgBox.innerText = "Good job! 🎉 आपने कहानी के मूल्यों और संवेदनशीलता को बहुत अच्छी तरह सीखा है।";
+                msgBox.style.backgroundColor = "var(--success-light)";
+                msgBox.style.color = "var(--success)";
+                playSound(sndClapping);
+            } else if (percent >= 40) {
+                emojiEl.innerText = "👍";
+                titleEl.innerText = "सराहनीय प्रयास!";
+                msgBox.innerText = "Review this chapter and try again 👍 पशु प्रेम और उत्तरदायित्व को और गहराई से समझें।";
+                msgBox.style.backgroundColor = "#ffedd5";
+                msgBox.style.color = "#c2410c";
+            } else {
+                emojiEl.innerText = "📚";
+                titleEl.innerText = "पुनः प्रयास करें!";
+                msgBox.innerText = "Let’s practise more 📚 कहानी के केंद्रीय भाव और दयालुता के संदेश को फिर से समझें।";
+                msgBox.style.backgroundColor = "var(--error-light)";
+                msgBox.style.color = "var(--error)";
+            }
+        }
+
+        function restartQuiz() {
+            currentIndex = 0;
+            score = 0;
+            switchScreen('instruction-screen');
+        }
+    </script>
+</body>
+</html>
