@@ -1,1 +1,626 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Yoga & Healthy Life Competency Quiz</title>
+    <style>
+        :root {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --primary: #0d9488;
+            --primary-dark: #115e59;
+            --accent: #f59e0b;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --error: #dc2626;
+            --error-light: #fee2e2;
+            --border: #cbd5e1;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Screen Visibility Control */
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            flex-grow: 1;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Splash Screen Configured for Local Assets */
+        #splash-screen {
+            justify-content: center;
+            align-items: center;
+            background: #ffffff;
+        }
+
+        .logo-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .innovine-logo-img {
+            max-width: 200px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            animation: pulseTrack 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseTrack {
+            0% { transform: scale(0.96); opacity: 0.95; }
+            50% { transform: scale(1.04); opacity: 1; }
+            100% { transform: scale(0.96); opacity: 0.95; }
+        }
+
+        /* Instruction Screen */
+        #instruction-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .ins-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .ins-box {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .ins-item {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-action:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Main Quiz Screen */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--bg-color);
+        }
+
+        .mute-btn {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: var(--bg-color);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .timer {
+            color: var(--error);
+        }
+
+        .competency-badge {
+            align-self: flex-start;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Options Configuration */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .option-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .option-card.correct {
+            background-color: var(--success-light) !important;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+            font-weight: 700;
+        }
+
+        .option-card.wrong {
+            background-color: var(--error-light) !important;
+            border-color: var(--error) !important;
+            color: var(--error) !important;
+            opacity: 0.8;
+        }
+
+        .option-card.disabled {
+            cursor: not-allowed;
+        }
+
+        .feedback-msg {
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 700;
+            background: #fff7ed;
+            color: #c2410c;
+            display: none;
+        }
+
+        .action-area {
+            margin-top: 20px;
+        }
+
+        /* End Screen Result Layout */
+        #result-screen {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .congrats-art {
+            font-size: 64px;
+            margin-bottom: 10px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .result-msg-box {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 15px 0 25px 0;
+            padding: 16px;
+            border-radius: 12px;
+            width: 100%;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            border: 4px solid var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: fly 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        
+        <div id="splash-screen" class="screen active">
+            <div class="logo-container">
+                <img src="./assets/innovine-logo.png" alt="Innovine Logo" class="innovine-logo-img">
+            </div>
+        </div>
+
+        <div id="instruction-screen" class="screen">
+            <div class="ins-title">निर्देश</div>
+            <div class="ins-box">
+                <div class="ins-item">⏱️ <span>प्रत्येक प्रश्न के लिए 60 सेकंड का समय मिलेगा।</span></div>
+                <div class="ins-item">🔄 <span>गलत उत्तर देने पर केवल 1 और अवसर (कुल 2 चांस) मिलेगा।</span></div>
+                <div class="ins-item">🎯 <span>सही विकल्प चुनकर अंक प्राप्त करें।</span></div>
+            </div>
+            <button class="btn-action" onclick="startQuiz()">शुरू करें 🚀</button>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div class="game-header">
+                <div class="competency-badge" id="competency-box">योग्यता</div>
+                <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊 आवाज़ ऑन</button>
+            </div>
+            
+            <div class="stats-bar">
+                <div id="q-count">प्रश्न: 1/10</div>
+                <div id="score-count">अंक: 0/10</div>
+                <div class="timer" id="timer-display">⏱️ 60s</div>
+            </div>
+
+            <div class="question-text" id="question-box">प्रश्न लोड हो रहा है...</div>
+
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="feedback-msg" id="feedback-box"></div>
+
+            <div class="action-area">
+                <button class="btn-action" id="nextBtn" style="display: none;" onclick="nextQuestion()">अगला प्रश्न ➡️</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <div class="congrats-art" id="result-emoji">🎉</div>
+            <div class="ins-title" id="result-title">बधाई हो!</div>
+            <div class="score-circle" id="final-score">0/10</div>
+            <div class="result-msg-box" id="result-message">खेलने के लिए धन्यवाद!</div>
+            <button class="btn-action" onclick="restartQuiz()">🔄 फिर से खेलें</button>
+        </div>
+
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "आरव पढ़ाई करते समय जल्दी थक जाता है और उसका ध्यान एक जगह नहीं लगता। योग के महत्व को समझते हुए उसे क्या करना चाहिए?",
+                options: ["देर रात तक जागना चाहिए।", "नियमित रूप से योग और प्राणायाम का अभ्यास करना चाहिए।", "खेलना पूरी तरह बंद कर देना चाहिए।", "भोजन करना कम कर देना चाहिए।"],
+                answer: 1,
+                competency: "स्वास्थ्य संबंधी ज्ञान को जीवन में लागू करना"
+            },
+            {
+                q: "विद्यालय में योग दिवस मनाया जा रहा है। सभी विद्यार्थियों के लिए इसे उपयोगी बनाने के लिए क्या किया जाना चाहिए?",
+                options: ["केवल प्रतियोगिता आयोजित करनी चाहिए।", "योग के लाभ समझाकर सभी को अभ्यास में शामिल करना चाहिए।", "केवल कुछ विद्यार्थियों को भाग लेने देना चाहिए।", "योग को कठिन बताकर छोड़ देना चाहिए।"],
+                answer: 1,
+                competency: "समावेशी और स्वास्थ्यवर्धक निर्णय लेना"
+            },
+            {
+                q: "योग को केवल व्यायाम न मानकर जीवन शैली क्यों कहा जाता है?",
+                options: ["क्योंकि योग केवल शरीर को मजबूत बनाता है।", "क्योंकि योग शरीर, मन और विचारों में संतुलन लाने में सहायता करता है।", "क्योंकि योग केवल खिलाड़ियों के लिए है।", "क्योंकि योग करने में अधिक समय लगता है।"],
+                answer: 1,
+                competency: "विषय के गहरे अर्थ को समझना"
+            },
+            {
+                q: "एक विद्यार्थी परीक्षा के समय तनाव महसूस करता है। योग उसकी किस प्रकार सहायता कर सकता है?",
+                options: ["तनाव को बढ़ाकर", "मन को शांत करके और एकाग्रता बढ़ाकर", "पढ़ाई बंद करवाकर", "समय की बर्बादी करके"],
+                answer: 1,
+                competency: "समस्या की स्थिति में उचित समाधान चुनना"
+            },
+            {
+                q: "एक व्यक्ति कहता है, “योग केवल बुजुर्ग लोगों के लिए है।” इस कथन का सही मूल्यांकन क्या होगा?",
+                options: ["सही है क्योंकि बच्चे योग नहीं कर सकते।", "गलत है क्योंकि योग हर आयु वर्ग के लोगों के लिए लाभदायक हो सकता है।", "सही है क्योंकि योग केवल बीमारी में किया जाता है।", "गलत है क्योंकि योग का कोई लाभ नहीं होता।"],
+                answer: 1,
+                competency: "विचारों का मूल्यांकन और तर्क प्रस्तुत करना"
+            },
+            {
+                q: "यदि आपका मित्र योग करने में रुचि नहीं दिखाता, तो आप उसे क्या समझाएँगे?",
+                options: ["योग केवल समय की बर्बादी है।", "योग स्वास्थ्य, एकाग्रता और मानसिक शांति के लिए उपयोगी है।", "योग केवल परीक्षा के लिए आवश्यक है।", "योग करने की कोई आवश्यकता नहीं है।"],
+                answer: 1,
+                competency: "सकारात्मक स्वास्थ्य आदतों को बढ़ावा देना"
+            },
+            {
+                q: "यदि लोग नियमित योग और शारीरिक गतिविधियाँ न करें, तो क्या प्रभाव हो सकता है?",
+                options: ["शरीर और मन के स्वास्थ्य पर नकारात्मक प्रभाव पड़ सकता है।", "ऊर्जा हमेशा बढ़ती रहेगी।", "तनाव कभी नहीं होगा।", "शरीर को आराम की आवश्यकता नहीं होगी।"],
+                answer: 0,
+                competency: "कारण और परिणाम का विश्लेषण"
+            },
+            {
+                q: "विद्यालय में सुबह की प्रार्थना के बाद पाँच मिनट योग करवाने का निर्णय लिया गया। इसका सबसे बड़ा लाभ क्या होगा?",
+                options: ["विद्यार्थियों की एकाग्रता और स्वास्थ्य में सुधार होगा।", "पढ़ाई का समय पूरी तरह समाप्त हो जाएगा।", "विद्यार्थी आलसी हो जाएँगे।", "विद्यालय में अनुशासन कम हो जाएगा।"],
+                answer: 0,
+                competency: "सीख को विद्यालयी जीवन में लागू करना"
+            },
+            {
+                q: "योग दिवस मनाने का मुख्य उद्देश्य क्या है?",
+                options: ["केवल एक दिन योग करना।", "लोगों को योग के महत्व के प्रति जागरूक करना और स्वस्थ जीवन के लिए प्रेरित करना।", "केवल योग प्रतियोगिता जीतना।", "केवल छुट्टी मनाना।"],
+                answer: 1,
+                competency: "उद्देश्य और संदेश का विश्लेषण"
+            },
+            {
+                q: "एक विद्यार्थी कहता है, “अच्छा स्वास्थ्य केवल दवाइयों से प्राप्त किया जा सकता है।” योग के आधार पर आप क्या कहेंगे?",
+                options: ["यह सही है क्योंकि जीवनशैली का कोई महत्व नहीं है।", "यह अधूरा विचार है क्योंकि स्वस्थ आदतें, योग और संतुलित जीवन भी आवश्यक हैं।", "यह सही है क्योंकि व्यायाम हानिकारक होता है।", "यह गलत है क्योंकि दवाइयों की आवश्यकता नहीं होती।"],
+                answer: 1,
+                competency: "स्वास्थ्य संबंधी विचारों का मूल्यांकन"
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let currentAttempts = 0; 
+        let timeLeft = 60;
+        let timerInterval = null;
+        let isMuted = false;
+
+        // Relative paths targeting audio assets safely
+        const sndCorrect = new Audio('./assets/correct.mp3');
+        const sndWrong = new Audio('./assets/wrong.mp3');
+        const sndClapping = new Audio('./assets/clapping.mp3');
+
+        window.onload = () => {
+            setTimeout(() => {
+                switchScreen('instruction-screen');
+            }, 5000);
+        };
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteBtn').innerText = isMuted ? "🔇 आवाज़ म्यूट" : "🔊 आवाज़ ऑन";
+        }
+
+        function playSound(audio) {
+            if (!isMuted) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio asset handled safely."));
+            }
+        }
+
+        function startQuiz() {
+            switchScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 60;
+            document.getElementById('timer-display').innerText = `⏱️ ${timeLeft}s`;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-display').innerText = `⏱️ ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            currentAttempts = 0;
+            const currentQuestion = questions[currentIndex];
+            
+            document.getElementById('q-count').innerText = `प्रश्न: ${currentIndex + 1}/10`;
+            document.getElementById('score-count').innerText = `अंक: ${score}/10`;
+            document.getElementById('competency-box').innerText = currentQuestion.competency;
+            document.getElementById('question-box').innerText = currentQuestion.q;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            document.getElementById('feedback-box').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+
+            currentQuestion.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-card';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(idx, btn);
+                container.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            const currentQuestion = questions[currentIndex];
+            const container = document.getElementById('options-container');
+            const feedback = document.getElementById('feedback-box');
+
+            if (selectedIndex === currentQuestion.answer) {
+                clearInterval(timerInterval);
+                selectedBtn.classList.add('correct');
+                playSound(sndCorrect);
+                triggerSparkles();
+                score++;
+                document.getElementById('score-count').innerText = `अंक: ${score}/10`;
+                disableAllOptions();
+                document.getElementById('nextBtn').style.display = 'block';
+            } else {
+                currentAttempts++;
+                selectedBtn.classList.add('wrong');
+                selectedBtn.onclick = null; 
+                playSound(sndWrong);
+
+                if (currentAttempts === 1) {
+                    feedback.innerText = "गलत उत्तर! आपके पास 1 आखिरी प्रयास शेष है।";
+                    feedback.style.display = 'block';
+                } else {
+                    clearInterval(timerInterval);
+                    feedback.style.display = 'none';
+                    disableAllOptions();
+                    container.children[currentQuestion.answer].classList.add('correct');
+                    document.getElementById('nextBtn').style.display = 'block';
+                }
+            }
+        }
+
+        function handleTimeout() {
+            disableAllOptions();
+            const currentQuestion = questions[currentIndex];
+            const container = document.getElementById('options-container');
+            container.children[currentQuestion.answer].classList.add('correct');
+            
+            const feedback = document.getElementById('feedback-box');
+            feedback.innerText = "समय समाप्त हो गया!";
+            feedback.style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function disableAllOptions() {
+            const options = document.getElementById('options-container').children;
+            for (let opt of options) {
+                opt.classList.add('disabled');
+                opt.onclick = null;
+            }
+        }
+
+        function triggerSparkles() {
+            const container = document.querySelector('.quiz-container');
+            for(let i = 0; i < 15; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = '50%';
+                p.style.top = '40%';
+                p.style.setProperty('--x', (Math.random() * 300 - 150) + 'px');
+                p.style.setProperty('--y', (Math.random() * 300 - 150) + 'px');
+                p.style.backgroundColor = ['#0d9488', '#22c55e', '#eab308', '#3b82f6'][Math.floor(Math.random()*4)];
+                container.appendChild(p);
+                setTimeout(() => p.remove(), 800);
+            }
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            switchScreen('result-screen');
+            const percent = (score / questions.length) * 100;
+            document.getElementById('final-score').innerText = `${score}/10`;
+
+            const emojiEl = document.getElementById('result-emoji');
+            const titleEl = document.getElementById('result-title');
+            const msgBox = document.getElementById('result-message');
+
+            if (percent >= 75) {
+                emojiEl.innerText = "🏆";
+                titleEl.innerText = "शानदार प्रदर्शन!";
+                msgBox.innerText = "Good job! 🎉 आपने इस अध्याय के मूल्यों और अवधारणाओं को बहुत अच्छी तरह सीखा है।";
+                msgBox.style.backgroundColor = "var(--success-light)";
+                msgBox.style.color = "var(--success)";
+                playSound(sndClapping);
+            } else if (percent >= 40) {
+                emojiEl.innerText = "👍";
+                titleEl.innerText = "सराहनीय प्रयास!";
+                msgBox.innerText = "Review this chapter and try again 👍 योग और स्वस्थ जीवन शैली को और गहराई से समझें।";
+                msgBox.style.backgroundColor = "#ffedd5";
+                msgBox.style.color = "#c2410c";
+            } else {
+                emojiEl.innerText = "📚";
+                titleEl.innerText = "पुनः प्रयास करें!";
+                msgBox.innerText = "Let’s practise more 📚 नियमित अभ्यास, मानसिक शांति और एकाग्रता के संदेश को फिर से समझें।";
+                msgBox.style.backgroundColor = "var(--error-light)";
+                msgBox.style.color = "var(--error)";
+            }
+        }
+
+        function restartQuiz() {
+            currentIndex = 0;
+            score = 0;
+            switchScreen('instruction-screen');
+        }
+    </script>
+</body>
+</html>
