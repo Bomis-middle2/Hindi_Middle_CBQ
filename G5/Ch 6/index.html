@@ -64,11 +64,11 @@
             display: flex;
         }
 
-        /* 1) SVG/CSS Logo Splash Screen */
+        /* 1) Splash Screen using the actual local image asset */
         #splash-screen {
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+            background: #ffffff;
         }
 
         .logo-container {
@@ -78,21 +78,17 @@
             gap: 16px;
         }
 
-        .logo-text {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: 1px;
+        .innovine-logo-img {
+            max-width: 180px;
+            height: auto;
+            object-fit: contain;
+            animation: pulseTrack 2.5s infinite ease-in-out;
         }
 
-        .logo-text span {
-            color: var(--accent);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.9; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.9; }
+        @keyframes pulseTrack {
+            0% { transform: scale(0.96); opacity: 0.95; }
+            50% { transform: scale(1.04); opacity: 1; }
+            100% { transform: scale(0.96); opacity: 0.95; }
         }
 
         /* 2) Instruction Screen */
@@ -200,7 +196,7 @@
             margin-bottom: 20px;
         }
 
-        /* Options Grid */
+        /* Options Configuration */
         .options-grid {
             display: flex;
             flex-direction: column;
@@ -254,7 +250,7 @@
             margin-top: 20px;
         }
 
-        /* 4) End Result Screen */
+        /* 4) End Screen Result Layout */
         #result-screen {
             text-align: center;
             justify-content: center;
@@ -296,7 +292,6 @@
             margin-bottom: 15px;
         }
 
-        /* Sparkles Particles Effect */
         .particle {
             position: absolute;
             width: 6px;
@@ -318,12 +313,7 @@
         
         <div id="splash-screen" class="screen active">
             <div class="logo-container">
-                <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: pulse 2s infinite;">
-                    <circle cx="50" cy="50" r="42" stroke="#0d9488" stroke-width="6" fill="#ccfbf1"/>
-                    <path d="M30 40 L50 25 L70 40 L70 75 L30 75 Z" fill="#0d9488"/>
-                    <path d="M45 50 L55 50 M50 45 L50 55" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
-                </svg>
-                <div class="logo-text">Inno<span>vine</span></div>
+                <img src="assets/innovine-logo.png" alt="Innovine Logo" class="innovine-logo-img">
             </div>
         </div>
 
@@ -371,11 +361,10 @@
     </div>
 
     <script>
-        // Exactly 10 questions on "Gopal and Mittu" Chapter
         const questions = [
             {
                 q: "यदि आपके मित्र को किसी प्रिय वस्तु या व्यक्ति से दूर होना पड़े, तो गोपाल की तरह आप क्या करेंगे?",
-                options: ["उसकी भावनाओं को अनदेखा करेंगे।", "उसकी भावनाओं को समझकर उसे सहयोग देंगे।", "उसका मज़ाक उड़ाएँगे।", "eउसे अकेला छोड़ देंगे।"],
+                options: ["उसकी भावनाओं को अनदेखा करेंगे।", "उसकी भावनाओं को समझकर उसे सहयोग देंगे।", "उसका मज़ाक उड़ाएँगे।", "उसे अकेला छोड़ देंगे।"],
                 answer: 1,
                 competency: "दूसरों की भावनाओं को समझकर व्यवहार करना"
             },
@@ -405,7 +394,7 @@
             },
             {
                 q: "यदि आपके विद्यालय में किसी घायल पक्षी या जानवर को देखा जाए, तो आपको क्या करना चाहिए?",
-                options: ["eउसे परेशान करना चाहिए।", "उसकी सहायता करनी चाहिए और बड़े लोगों को जानकारी देनी चाहिए।", "उसे वहीं छोड़ देना चाहिए।", "उसे पकड़कर घर ले जाना चाहिए।"],
+                options: ["उसे परेशान करना चाहिए।", "उसकी सहायता करनी चाहिए और बड़े लोगों को जानकारी देनी चाहिए।", "उसे वहीं छोड़ देना चाहिए।", "उसे पकड़कर घर ले जाना चाहिए।"],
                 answer: 1,
                 competency: "संवेदनशील और जिम्मेदार व्यवहार अपनाना"
             },
@@ -416,7 +405,7 @@
                 competency: "कारण और परिणाम का विश्लेषण"
             },
             {
-                q: "गोपाल ने मिट्ठू को खरीदने के लिए पैसे बचाने या देने का प्रयास किया। इससे हमें कौन-Structure सीख मिलती है?",
+                q: "गोपाल ने मिट्ठू को खरीदने के लिए पैसे बचाने या देने का प्रयास किया। इससे हमें कौन-सी सीख मिलती है?",
                 options: ["अपनी इच्छा पूरी करने के लिए कोई भी तरीका अपनाना चाहिए।", "सच्चे संबंधों के लिए प्रयास और जिम्मेदारी आवश्यक है।", "पैसे का कोई महत्व नहीं होता।", "दूसरों की मदद नहीं करनी चाहिए।"],
                 answer: 1,
                 competency: "कहानी के मूल्य को जीवन में लागू करना"
@@ -446,7 +435,7 @@
         const sndWrong = new Audio('assets/wrong.mp3');
         const sndClapping = new Audio('assets/clapping.mp3');
 
-        // Automatic 5-second Splash Transition
+        // Automatic 5-second Splash Screen timeout
         window.onload = () => {
             setTimeout(() => {
                 switchScreen('instruction-screen');
@@ -466,7 +455,7 @@
         function playSound(audio) {
             if (!isMuted) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio visual hook loaded."));
+                audio.play().catch(e => console.log("Audio asset reference active."));
             }
         }
 
@@ -564,70 +553,4 @@
             const options = document.getElementById('options-container').children;
             for (let opt of options) {
                 opt.classList.add('disabled');
-                opt.onclick = null;
-            }
-        }
-
-        function triggerSparkles() {
-            const container = document.querySelector('.quiz-container');
-            for(let i = 0; i < 15; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.style.left = '50%';
-                p.style.top = '40%';
-                p.style.setProperty('--x', (Math.random() * 300 - 150) + 'px');
-                p.style.setProperty('--y', (Math.random() * 300 - 150) + 'px');
-                p.style.backgroundColor = ['#0d9488', '#22c55e', '#eab308', '#3b82f6'][Math.floor(Math.random()*4)];
-                container.appendChild(p);
-                setTimeout(() => p.remove(), 800);
-            }
-        }
-
-        function nextQuestion() {
-            currentIndex++;
-            if (currentIndex < questions.length) {
-                loadQuestion();
-            } else {
-                showResults();
-            }
-        }
-
-        function showResults() {
-            switchScreen('result-screen');
-            const percent = (score / questions.length) * 100;
-            document.getElementById('final-score').innerText = `${score}/10`;
-
-            const emojiEl = document.getElementById('result-emoji');
-            const titleEl = document.getElementById('result-title');
-            const msgBox = document.getElementById('result-message');
-
-            if (percent >= 75) {
-                emojiEl.innerText = "🏆";
-                titleEl.innerText = "शानदार प्रदर्शन!";
-                msgBox.innerText = "Good job! 🎉 आपने कहानी के मूल्यों और संवेदनशीलता को बहुत अच्छी तरह सीखा है।";
-                msgBox.style.backgroundColor = "var(--success-light)";
-                msgBox.style.color = "var(--success)";
-                playSound(sndClapping);
-            } else if (percent >= 40) {
-                emojiEl.innerText = "👍";
-                titleEl.innerText = "सराहनीय प्रयास!";
-                msgBox.innerText = "Review this chapter and try again 👍 पशु प्रेम और उत्तरदायित्व को और गहराई से समझें।";
-                msgBox.style.backgroundColor = "#ffedd5";
-                msgBox.style.color = "#c2410c";
-            } else {
-                emojiEl.innerText = "📚";
-                titleEl.innerText = "पुनः प्रयास करें!";
-                msgBox.innerText = "Let’s practise more 📚 कहानी के केंद्रीय भाव और दयालुता के संदेश को फिर से समझें।";
-                msgBox.style.backgroundColor = "var(--error-light)";
-                msgBox.style.color = "var(--error)";
-            }
-        }
-
-        function restartQuiz() {
-            currentIndex = 0;
-            score = 0;
-            switchScreen('instruction-screen');
-        }
-    </script>
-</body>
-</html>
+                opt.onclick
