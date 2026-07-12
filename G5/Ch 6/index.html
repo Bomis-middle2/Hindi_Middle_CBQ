@@ -64,7 +64,7 @@
             display: flex;
         }
 
-        /* 1) Splash Screen using the actual local image asset */
+        /* Splash Screen Configured for Local Assets */
         #splash-screen {
             justify-content: center;
             align-items: center;
@@ -72,16 +72,20 @@
         }
 
         .logo-container {
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 16px;
         }
 
         .innovine-logo-img {
-            max-width: 180px;
+            max-width: 200px;
+            width: 80%;
             height: auto;
             object-fit: contain;
+            display: block;
             animation: pulseTrack 2.5s infinite ease-in-out;
         }
 
@@ -91,7 +95,7 @@
             100% { transform: scale(0.96); opacity: 0.95; }
         }
 
-        /* 2) Instruction Screen */
+        /* Instruction Screen */
         #instruction-screen {
             justify-content: center;
             align-items: center;
@@ -143,7 +147,7 @@
             background: var(--primary-dark);
         }
 
-        /* 3) Main Quiz Screen */
+        /* Main Quiz Screen */
         .game-header {
             display: flex;
             justify-content: space-between;
@@ -250,7 +254,7 @@
             margin-top: 20px;
         }
 
-        /* 4) End Screen Result Layout */
+        /* End Screen Result Layout */
         #result-screen {
             text-align: center;
             justify-content: center;
@@ -313,7 +317,7 @@
         
         <div id="splash-screen" class="screen active">
             <div class="logo-container">
-                <img src="assets/innovine-logo.png" alt="Innovine Logo" class="innovine-logo-img">
+                <img src="./assets/innovine-logo.png" alt="Innovine Logo" class="innovine-logo-img">
             </div>
         </div>
 
@@ -405,14 +409,14 @@
                 competency: "कारण और परिणाम का विश्लेषण"
             },
             {
-                q: "गोपाल ने मिट्ठू को खरीदने के लिए पैसे बचाने या देने का प्रयास किया। इससे हमें कौन-सी सीख मिलती है?",
+                q: "गोपाल ने मिट्ठू को खरीदने के लिए पैसे बचाने या देने का प्रयास किया। इससे हमें कौन-Structure सीख मिलती है?",
                 options: ["अपनी इच्छा पूरी करने के लिए कोई भी तरीका अपनाना चाहिए।", "सच्चे संबंधों के लिए प्रयास और जिम्मेदारी आवश्यक है।", "पैसे का कोई महत्व नहीं होता।", "दूसरों की मदद नहीं करनी चाहिए।"],
                 answer: 1,
                 competency: "कहानी के मूल्य को जीवन में लागू करना"
             },
             {
                 q: "गोपाल और सर्कस कंपनी के मालिक के व्यवहार में क्या समानता थी?",
-                options: ["दोनों केवल पैसे के बारे में सोचते थे।", "दोनों ने मिट्ठू के प्रति स्नेह और चिंता दिखाई।", "दोनों मिट्ठू से डरते थे।", "दोनों उसे छोड़ना चाहते थे।"],
+                options: ["दोनों केवल पैसे के बारे में सोचते थे।", "दोनों ने मिट्ठू के प्रति स्नेह और चिंता दिखाई।", "दोनों मिट्ठू से डरते थे।", "दोनों उसे छोड़ करना चाहते थे।"],
                 answer: 1,
                 competency: "पात्रों के व्यवहार का विश्लेषण करना"
             },
@@ -431,11 +435,11 @@
         let timerInterval = null;
         let isMuted = false;
 
-        const sndCorrect = new Audio('assets/correct.mp3');
-        const sndWrong = new Audio('assets/wrong.mp3');
-        const sndClapping = new Audio('assets/clapping.mp3');
+        // Using safe relative paths for Audio as well
+        const sndCorrect = new Audio('./assets/correct.mp3');
+        const sndWrong = new Audio('./assets/wrong.mp3');
+        const sndClapping = new Audio('./assets/clapping.mp3');
 
-        // Automatic 5-second Splash Screen timeout
         window.onload = () => {
             setTimeout(() => {
                 switchScreen('instruction-screen');
@@ -455,7 +459,7 @@
         function playSound(audio) {
             if (!isMuted) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio asset reference active."));
+                audio.play().catch(e => console.log("Audio node safely handled."));
             }
         }
 
@@ -553,4 +557,70 @@
             const options = document.getElementById('options-container').children;
             for (let opt of options) {
                 opt.classList.add('disabled');
-                opt.onclick
+                opt.onclick = null;
+            }
+        }
+
+        function triggerSparkles() {
+            const container = document.querySelector('.quiz-container');
+            for(let i = 0; i < 15; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = '50%';
+                p.style.top = '40%';
+                p.style.setProperty('--x', (Math.random() * 300 - 150) + 'px');
+                p.style.setProperty('--y', (Math.random() * 300 - 150) + 'px');
+                p.style.backgroundColor = ['#0d9488', '#22c55e', '#eab308', '#3b82f6'][Math.floor(Math.random()*4)];
+                container.appendChild(p);
+                setTimeout(() => p.remove(), 800);
+            }
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            switchScreen('result-screen');
+            const percent = (score / questions.length) * 100;
+            document.getElementById('final-score').innerText = `${score}/10`;
+
+            const emojiEl = document.getElementById('result-emoji');
+            const titleEl = document.getElementById('result-title');
+            const msgBox = document.getElementById('result-message');
+
+            if (percent >= 75) {
+                emojiEl.innerText = "🏆";
+                titleEl.innerText = "शानदार प्रदर्शन!";
+                msgBox.innerText = "Good job! 🎉 आपने कहानी के मूल्यों और संवेदनशीलता को बहुत अच्छी तरह सीखा है।";
+                msgBox.style.backgroundColor = "var(--success-light)";
+                msgBox.style.color = "var(--success)";
+                playSound(sndClapping);
+            } else if (percent >= 40) {
+                emojiEl.innerText = "👍";
+                titleEl.innerText = "सराहनीय प्रयास!";
+                msgBox.innerText = "Review this chapter and try again 👍 पशु प्रेम और उत्तरदायित्व को और गहराई से समझें।";
+                msgBox.style.backgroundColor = "#ffedd5";
+                msgBox.style.color = "#c2410c";
+            } else {
+                emojiEl.innerText = "📚";
+                titleEl.innerText = "पुनः प्रयास करें!";
+                msgBox.innerText = "Let’s practise more 📚 कहानी के केंद्रीय भाव और दयालुता के संदेश को फिर से समझें।";
+                msgBox.style.backgroundColor = "var(--error-light)";
+                msgBox.style.color = "var(--error)";
+            }
+        }
+
+        function restartQuiz() {
+            currentIndex = 0;
+            score = 0;
+            switchScreen('instruction-screen');
+        }
+    </script>
+</body>
+</html>
