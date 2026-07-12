@@ -1,1 +1,626 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Competency Quiz</title>
+    <style>
+        :root {
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --primary: #0d9488;
+            --primary-dark: #115e59;
+            --accent: #f59e0b;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --error: #dc2626;
+            --error-light: #fee2e2;
+            --border: #cbd5e1;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Screen Visibility Control */
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            flex-grow: 1;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Splash Screen Configured for Local Assets */
+        #splash-screen {
+            justify-content: center;
+            align-items: center;
+            background: #ffffff;
+        }
+
+        .logo-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .innovine-logo-img {
+            max-width: 200px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            animation: pulseTrack 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseTrack {
+            0% { transform: scale(0.96); opacity: 0.95; }
+            50% { transform: scale(1.04); opacity: 1; }
+            100% { transform: scale(0.96); opacity: 0.95; }
+        }
+
+        /* Instruction Screen */
+        #instruction-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .ins-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .ins-box {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .ins-item {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-action:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Main Quiz Screen */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--bg-color);
+        }
+
+        .mute-btn {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: var(--bg-color);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .timer {
+            color: var(--error);
+        }
+
+        .competency-badge {
+            align-self: flex-start;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Options Configuration */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .option-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .option-card.correct {
+            background-color: var(--success-light) !important;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+            font-weight: 700;
+        }
+
+        .option-card.wrong {
+            background-color: var(--error-light) !important;
+            border-color: var(--error) !important;
+            color: var(--error) !important;
+            opacity: 0.8;
+        }
+
+        .option-card.disabled {
+            cursor: not-allowed;
+        }
+
+        .feedback-msg {
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 700;
+            background: #fff7ed;
+            color: #c2410c;
+            display: none;
+        }
+
+        .action-area {
+            margin-top: 20px;
+        }
+
+        /* End Screen Result Layout */
+        #result-screen {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .congrats-art {
+            font-size: 64px;
+            margin-bottom: 10px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .result-msg-box {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 15px 0 25px 0;
+            padding: 16px;
+            border-radius: 12px;
+            width: 100%;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            border: 4px solid var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: fly 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        
+        <div id="splash-screen" class="screen active">
+            <div class="logo-container">
+                <img src="./assets/innovine-logo.png" alt="Innovine Logo" class="innovine-logo-img">
+            </div>
+        </div>
+
+        <div id="instruction-screen" class="screen">
+            <div class="ins-title">निर्देश</div>
+            <div class="ins-box">
+                <div class="ins-item">⏱️ <span>प्रत्येक प्रश्न के लिए 60 सेकंड का समय मिलेगा।</span></div>
+                <div class="ins-item">🔄 <span>गलत उत्तर देने पर केवल 1 और अवसर (कुल 2 चांस) मिलेगा।</span></div>
+                <div class="ins-item">🎯 <span>सही विकल्प चुनकर अंक प्राप्त करें।</span></div>
+            </div>
+            <button class="btn-action" onclick="startQuiz()">शुरू करें 🚀</button>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div class="game-header">
+                <div class="competency-badge" id="competency-box">योग्यता</div>
+                <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊 आवाज़ ऑन</button>
+            </div>
+            
+            <div class="stats-bar">
+                <div id="q-count">प्रश्न: 1/10</div>
+                <div id="score-count">अंक: 0/10</div>
+                <div class="timer" id="timer-display">⏱️ 60s</div>
+            </div>
+
+            <div class="question-text" id="question-box">प्रश्न लोड हो रहा है...</div>
+
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="feedback-msg" id="feedback-box"></div>
+
+            <div class="action-area">
+                <button class="btn-action" id="nextBtn" style="display: none;" onclick="nextQuestion()">अगला प्रश्न ➡️</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <div class="congrats-art" id="result-emoji">🎉</div>
+            <div class="ins-title" id="result-title">बधाई हो!</div>
+            <div class="score-circle" id="final-score">0/10</div>
+            <div class="result-msg-box" id="result-message">खेलने के लिए धन्यवाद!</div>
+            <button class="btn-action" onclick="restartQuiz()">🔄 फिर से खेलें</button>
+        </div>
+
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "कविता में हिमालय को ऊँचा और महान बताया गया है। यदि आप हिमालय की प्राकृतिक सुंदरता को बनाए रखना चाहते हैं, तो क्या करेंगे?",
+                options: ["वहाँ कूड़ा फैलाएँगे।", "पेड़ों को काटेंगे।", "पर्यावरण की रक्षा करेंगे और स्वच्छता बनाए रखेंगे।", "प्राकृतिक स्थानों को नुकसान पहुँचाएँगे।"],
+                answer: 2,
+                competency: "प्रकृति संरक्षण के विचारों को जीवन में लागू करना"
+            },
+            {
+                q: "कविता में गंगा, यमुना और त्रिवेणी का वर्णन किया गया है। यदि आपको नदियों को स्वच्छ रखने का अभियान चलाना हो, तो आप क्या करेंगे?",
+                options: ["नदियों में कचरा डालने से रोकने के लिए लोगों को जागरूक करेंगे।", "नदियों में अधिक कचरा डालेंगे।", "केवल नदी की तस्वीर बनाएँगे।", "नदियों की उपेक्षा करेंगे।"],
+                answer: 0,
+                competency: "पर्यावरणीय समस्या का समाधान करना"
+            },
+            {
+                q: "कवि ने अपनी भूमि को “स्वर्ण भूमि” क्यों कहा है?",
+                options: ["क्योंकि वहाँ केवल सोना मिलता है।", "क्योंकि वह भूमि प्राकृतिक सुंदरता, संस्कृति और गुणों से बहुत मूल्यवान है।", "क्योंकि वहाँ सोने की इमारतें बनी हैं।", "क्योंकि वहाँ के लोग सोने के आभूषण पहनते हैं।"],
+                answer: 1,
+                competency: "काव्य भाव और प्रतीकात्मक अर्थ को समझना"
+            },
+            {
+                q: "कविता में मातृभूमि के प्रति प्रेम व्यक्त किया गया है। एक विद्यार्थी अपनी मातृभूमि के प्रति प्रेम कैसे दिखा सकता है?",
+                options: ["सार्वजनिक स्थानों को गंदा करके।", "अपने कर्तव्यों को ईमानदारी से निभाकर और देश की संपत्ति की रक्षा करके।", "नियमों का पालन न करके।", "प्राकृतिक संसाधनों को नष्ट करके।"],
+                answer: 1,
+                competency: "नागरिक जिम्मेदारी को समझना"
+            },
+            {
+                q: "कविता में हिमालय को आकाश चूमता हुआ बताया गया है। इसका भाव क्या है?",
+                options: ["हिमालय वास्तव में आकाश को छूता है।", "हिमालय की ऊँचाई और महानता को दर्शाया गया है।", "हिमालय उड़ सकता है।", "हिमालय एक जीवित व्यक्ति है।"],
+                answer: 1,
+                competency: "भाषा में छिपे भाव और कल्पना को समझना"
+            },
+            {
+                q: "कविता में चिड़ियों, झरनों और पेड़ों की सुंदरता का वर्णन किया गया है। यदि किसी क्षेत्र में पक्षी कम होते जा रहे हैं, तो इसका कारण क्या हो सकता है?",
+                options: ["प्राकृतिक आवास का नष्ट होना।", "पेड़ों की संख्या बढ़ना।", "पर्यावरण का बेहतर होना।", "स्वच्छता बढ़ना।"],
+                answer: 0,
+                competency: "पर्यावरण कारणों का विश्लेषण करना"
+            },
+            {
+                q: "यदि नदियाँ और जंगल सुरक्षित नहीं रहेंगे, तो इसका क्या प्रभाव पड़ेगा?",
+                options: ["प्रकृति का संतुलन बिगड़ सकता है।", "पृथ्वी और सुंदर हो जाएगी।", "जीव-जंतुओं को कोई समस्या नहीं होगी।", "जल की आवश्यकता समाप्त हो जाएगी।"],
+                answer: 0,
+                competency: "कारण और परिणाम का विश्लेषण"
+            },
+            {
+                q: "आपके विद्यालय में “मातृभूमि संरक्षण अभियान” शुरू किया गया है। आप इसमें कैसे योगदान देंगे?",
+                options: ["पौधे लगाकर और स्वच्छता बनाए रखकर।", "कागज और पानी की बर्बादी करके।", "विद्यालय की वस्तुओं को नुकसान पहुँचाकर।", "अभियान में भाग न लेकर।"],
+                answer: 0,
+                competency: "सीखी गई बातों को व्यवहार में लागू करना"
+            },
+            {
+                q: "कविता में मातृभूमि को “पुण्य भूमि” और “कर्म भूमि” कहा गया है। इन दोनों शब्दों से क्या संदेश मिलता है?",
+                options: ["भूमि केवल रहने के लिए होती है।", "देश हमें अवसर देता है और हमारे अच्छे कार्यों से आगे बढ़ता है।", "देश में केवल धार्मिक कार्य होते हैं।", "भूमि का कोई महत्व नहीं होता।"],
+                answer: 1,
+                competency: "विचारों का विश्लेषण और निष्कर्ष निकालना"
+            },
+            {
+                q: "एक विद्यार्थी कहता है, “देश से प्रेम केवल कविता लिखने से दिखाया जा सकता है।” इस विचार का सही मूल्यांकन क्या होगा?",
+                options: ["सही है, क्योंकि केवल कविताएँ ही देश प्रेम दिखाती हैं।", "गलत है, क्योंकि देश प्रेम अच्छे कार्यों, जिम्मेदारी और सेवा से भी दिखाया जाता है।", "सही है, क्योंकि कार्यों का कोई महत्व नहीं होता।", "गलत है, क्योंकि देश से प्रेम करना आवश्यक नहीं है।"],
+                answer: 1,
+                competency: "विचारों का मूल्यांकन और तर्क प्रस्तुत करना"
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let currentAttempts = 0; 
+        let timeLeft = 60;
+        let timerInterval = null;
+        let isMuted = false;
+
+        // Relative path targeting asset folder structure safely
+        const sndCorrect = new Audio('./assets/correct.mp3');
+        const sndWrong = new Audio('./assets/wrong.mp3');
+        const sndClapping = new Audio('./assets/clapping.mp3');
+
+        window.onload = () => {
+            setTimeout(() => {
+                switchScreen('instruction-screen');
+            }, 5000);
+        };
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteBtn').innerText = isMuted ? "🔇 आवाज़ म्यूट" : "🔊 आवाज़ ऑन";
+        }
+
+        function playSound(audio) {
+            if (!isMuted) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio asset pipeline ready."));
+            }
+        }
+
+        function startQuiz() {
+            switchScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 60;
+            document.getElementById('timer-display').innerText = `⏱️ ${timeLeft}s`;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-display').innerText = `⏱️ ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            currentAttempts = 0;
+            const currentQuestion = questions[currentIndex];
+            
+            document.getElementById('q-count').innerText = `प्रश्न: ${currentIndex + 1}/10`;
+            document.getElementById('score-count').innerText = `अंक: ${score}/10`;
+            document.getElementById('competency-box').innerText = currentQuestion.competency;
+            document.getElementById('question-box').innerText = currentQuestion.q;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            document.getElementById('feedback-box').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+
+            currentQuestion.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-card';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(idx, btn);
+                container.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            const currentQuestion = questions[currentIndex];
+            const container = document.getElementById('options-container');
+            const feedback = document.getElementById('feedback-box');
+
+            if (selectedIndex === currentQuestion.answer) {
+                clearInterval(timerInterval);
+                selectedBtn.classList.add('correct');
+                playSound(sndCorrect);
+                triggerSparkles();
+                score++;
+                document.getElementById('score-count').innerText = `अंक: ${score}/10`;
+                disableAllOptions();
+                document.getElementById('nextBtn').style.display = 'block';
+            } else {
+                currentAttempts++;
+                selectedBtn.classList.add('wrong');
+                selectedBtn.onclick = null; 
+                playSound(sndWrong);
+
+                if (currentAttempts === 1) {
+                    feedback.innerText = "गलत उत्तर! आपके पास 1 आखिरी प्रयास शेष है।";
+                    feedback.style.display = 'block';
+                } else {
+                    clearInterval(timerInterval);
+                    feedback.style.display = 'none';
+                    disableAllOptions();
+                    container.children[currentQuestion.answer].classList.add('correct');
+                    document.getElementById('nextBtn').style.display = 'block';
+                }
+            }
+        }
+
+        function handleTimeout() {
+            disableAllOptions();
+            const currentQuestion = questions[currentIndex];
+            const container = document.getElementById('options-container');
+            container.children[currentQuestion.answer].classList.add('correct');
+            
+            const feedback = document.getElementById('feedback-box');
+            feedback.innerText = "समय समाप्त हो गया!";
+            feedback.style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function disableAllOptions() {
+            const options = document.getElementById('options-container').children;
+            for (let opt of options) {
+                opt.classList.add('disabled');
+                opt.onclick = null;
+            }
+        }
+
+        function triggerSparkles() {
+            const container = document.querySelector('.quiz-container');
+            for(let i = 0; i < 15; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = '50%';
+                p.style.top = '40%';
+                p.style.setProperty('--x', (Math.random() * 300 - 150) + 'px');
+                p.style.setProperty('--y', (Math.random() * 300 - 150) + 'px');
+                p.style.backgroundColor = ['#0d9488', '#22c55e', '#eab308', '#3b82f6'][Math.floor(Math.random()*4)];
+                container.appendChild(p);
+                setTimeout(() => p.remove(), 800);
+            }
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            switchScreen('result-screen');
+            const percent = (score / questions.length) * 100;
+            document.getElementById('final-score').innerText = `${score}/10`;
+
+            const emojiEl = document.getElementById('result-emoji');
+            const titleEl = document.getElementById('result-title');
+            const msgBox = document.getElementById('result-message');
+
+            if (percent >= 75) {
+                emojiEl.innerText = "🏆";
+                titleEl.innerText = "शानदार प्रदर्शन!";
+                msgBox.innerText = "Good job! 🎉 आपने कहानी के मूल्यों और संवेदनशीलता को बहुत अच्छी तरह सीखा है।";
+                msgBox.style.backgroundColor = "var(--success-light)";
+                msgBox.style.color = "var(--success)";
+                playSound(sndClapping);
+            } else if (percent >= 40) {
+                emojiEl.innerText = "👍";
+                titleEl.innerText = "सराहनीय प्रयास!";
+                msgBox.innerText = "Review this chapter and try again 👍 पशु प्रेम और उत्तरदायित्व को और गहराई से समझें।";
+                msgBox.style.backgroundColor = "#ffedd5";
+                msgBox.style.color = "#c2410c";
+            } else {
+                emojiEl.innerText = "📚";
+                titleEl.innerText = "पुनः प्रयास करें!";
+                msgBox.innerText = "Let’s practise more 📚 कहानी के केंद्रीय भाव और दयालुता के संदेश को फिर से समझें।";
+                msgBox.style.backgroundColor = "var(--error-light)";
+                msgBox.style.color = "var(--error)";
+            }
+        }
+
+        function restartQuiz() {
+            currentIndex = 0;
+            score = 0;
+            switchScreen('instruction-screen');
+        }
+    </script>
+</body>
+</html>
