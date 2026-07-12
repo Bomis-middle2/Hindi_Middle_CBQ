@@ -90,7 +90,7 @@
         }
 
         @keyframes pulseTrack {
-            0% { transform: scale(0.96); opacity: 0.95; }
+            0 { transform: scale(0.96); opacity: 0.95; }
             50% { transform: scale(1.04); opacity: 1; }
             100% { transform: scale(0.96); opacity: 0.95; }
         }
@@ -409,20 +409,20 @@
                 competency: "कारण और परिणाम का विश्लेषण"
             },
             {
-                q: "गोपाल ने मिट्ठू को खरीदने के लिए पैसे बचाने या देने का प्रयास किया। इससे हमें कौन-Structure सीख मिलती है?",
+                q: "गोपाल ने मिट्ठू को खरीदने के लिए पैसे बचाने या देने का प्रयास किया। इससे हमें कौन-सी सीख मिलती है?",
                 options: ["अपनी इच्छा पूरी करने के लिए कोई भी तरीका अपनाना चाहिए।", "सच्चे संबंधों के लिए प्रयास और जिम्मेदारी आवश्यक है।", "पैसे का कोई महत्व नहीं होता।", "दूसरों की मदद नहीं करनी चाहिए।"],
                 answer: 1,
                 competency: "कहानी के मूल्य को जीवन में लागू करना"
             },
             {
                 q: "गोपाल और सर्कस कंपनी के मालिक के व्यवहार में क्या समानता थी?",
-                options: ["दोनों केवल पैसे के बारे में सोचते थे।", "दोनों ने मिट्ठू के प्रति स्नेह और चिंता दिखाई।", "दोनों मिट्ठू से डरते थे।", "दोनों उसे छोड़ करना चाहते थे।"],
+                options: ["दोनों केवल पैसे के बारे में सोचते थे।", "दोनों ने मिट्ठू के प्रति स्नेह और चिंता दिखाई।", "दोनों मिट्ठू से डरते थे।", "दोनों उसे छोड़ना चाहते थे।"],
                 answer: 1,
                 competency: "पात्रों के व्यवहार का विश्लेषण करना"
             },
             {
                 q: "कहानी का मुख्य संदेश क्या है?",
-                options: ["केवल मनुष्य ही प्रेम कर सकते हैं।", "प्रेम, विश्वास और दया से किसी भी जीव के साथ मजबूत संबंध बनाया जा सकता है।", "जानवरों को हमेशा दूर रखना चाहिए।", "केवल पैसे से हर समस्या हल हो सकती है।"],
+                options: ["केवल मनुष्य ही प्रेम कर सकते हैं।", "प्रेम, विश्वास and दया से किसी भी जीव के साथ मजबूत संबंध बनाया जा सकता है।", "जानवरों को हमेशा दूर रखना चाहिए।", "केवल पैसे से हर समस्या हल हो सकती है।"],
                 answer: 1,
                 competency: "कहानी के केंद्रीय भाव का मूल्यांकन"
             }
@@ -435,7 +435,7 @@
         let timerInterval = null;
         let isMuted = false;
 
-        // Using safe relative paths for Audio as well
+        // Using safe relative paths for Audio assets
         const sndCorrect = new Audio('./assets/correct.mp3');
         const sndWrong = new Audio('./assets/wrong.mp3');
         const sndClapping = new Audio('./assets/clapping.mp3');
@@ -459,7 +459,7 @@
         function playSound(audio) {
             if (!isMuted) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio node safely handled."));
+                audio.play().catch(e => console.log("Audio asset handled safely."));
             }
         }
 
